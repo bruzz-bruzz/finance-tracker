@@ -3,7 +3,6 @@ import { useParams, useNavigate } from 'react-router-dom'
 import Chart from './Chart'
 import Toast from './Toast.tsx'
 import Togglemode from './Togglemode.tsx'
-import {useCookies} from 'react-cookie'
 export default function Dashboard() {
   const par = useParams()
   const nav = useNavigate()
@@ -12,7 +11,6 @@ export default function Dashboard() {
   const [registeredDate, setRegisteredDate] = useState('')
   const [transactions, setTransactions] = useState<any[]>([])
   const [summary, setSummary] = useState({ income: 0, expenses: 0})
-  const [cookies, setCookie] = useCookies(['theme'])
   const [page, setPage] = useState<'overview' | 'transactions' | 'account'>('overview')
   const [filterType,setFilterType] = useState<'income' | 'expense'>('income')
   const [chartData,setChartData] = useState(null)

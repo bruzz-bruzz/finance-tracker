@@ -4,10 +4,8 @@ import {useNavigate} from 'react-router-dom'
 import './App.css'
 import Toast from './Toast'
 import Togglemode from './Togglemode.tsx'
-import {useCookies} from 'react-cookie'
 export default function App() {
   const [email, setEmail] = useState<string>('')
-  const [cookies, setCookie] = useCookies(['theme'])
     const [toast, setToast] = useState<{message:string,type:boolean}>({message:'',type:false})
     const [password, setPassword] = useState('')
     const nav = useNavigate()

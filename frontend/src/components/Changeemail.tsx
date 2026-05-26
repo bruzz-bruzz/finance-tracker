@@ -2,12 +2,10 @@ import React, { useState } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import Toast from './Toast.tsx'
 import Togglemode from './Togglemode.tsx'
-import {useCookies} from 'react-cookie'
 export default function Changeemail() {
   const { id } = useParams()
   const nav = useNavigate()
   const [email, setEmail] = useState('')
-  const [cookies, setCookie] = useCookies(['theme'])
   const [confirm, setConfirm] = useState('')
   const [status, setStatus] = useState<{ ok: boolean; msg: string } | null>(null)
   const [loading, setLoading] = useState(false)

@@ -2,14 +2,12 @@ import React, { useState } from 'react'
 import Toast from './Toast'
 import {useNavigate} from 'react-router-dom'
 import Togglemode from './Togglemode.tsx'
-import {useCookies} from 'react-cookie'
 export default function Register() {
 	const [name, setName] = useState('')
 	const [email, setEmail] = useState('')
 	const [password, setPassword] = useState('')
 	const [confirm, setConfirm] = useState('')
 	const nav = useNavigate()
-	const [cookies, setCookie] = useCookies(['theme'])
     const [toast, setToast] = useState<{message:string,type:boolean}>({message:'',type:false})
     async function sendData(data:any){
         await fetch(`${import.meta.env.VITE_REACT_APP_BACKEND_BASEURL}/register`,{

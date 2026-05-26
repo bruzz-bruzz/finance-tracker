@@ -2,12 +2,10 @@ import React, { useState } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import Toast from './Toast.tsx'
 import Togglemode from './Togglemode.tsx'
-import {useCookies} from 'react-cookie'
 export default function Changepassword() {
   const { id } = useParams()
   const nav = useNavigate()
   const [current, setCurrent] = useState('')
-  const [cookies, setCookie] = useCookies(['theme'])
   const [password, setPassword] = useState('')
   const [confirm, setConfirm] = useState('')
   const [status, setStatus] = useState<{ ok: boolean; msg: string } | null>(null)

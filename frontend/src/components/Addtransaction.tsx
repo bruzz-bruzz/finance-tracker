@@ -1,7 +1,6 @@
 import './App.css'
 import {useState, useEffect} from 'react'
 import {useParams,useNavigate} from 'react-router-dom'
-import {useCookies} from 'react-cookie'
 import Toast from './Toast.tsx'
 import Togglemode from './Togglemode.tsx'
 export default function Addtransaction() {
@@ -12,7 +11,6 @@ export default function Addtransaction() {
     const [type,setType] = useState('income')
     const [name,setName] = useState('')
     const [message,setMessage] = useState({ok:false,msg:''})
-    const [cookies, setCookie] = useCookies(['theme'])
     const [transactionCategories,setTransactionCategories] = useState<string[]>([]) 
     const [category,setCategory] = useState('')
     const [page,setPage] = useState('addTransaction')
