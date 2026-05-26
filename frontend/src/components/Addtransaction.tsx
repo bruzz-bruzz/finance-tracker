@@ -2,7 +2,6 @@ import './App.css'
 import {useState, useEffect} from 'react'
 import {useParams,useNavigate} from 'react-router-dom'
 import Toast from './Toast.tsx'
-import Togglemode from './Togglemode.tsx'
 export default function Addtransaction() {
     const [title,setTitle] = useState('')
     const [amount,setAmount] = useState(0)
@@ -88,7 +87,6 @@ export default function Addtransaction() {
     },[])
     return (
         <div className='flex justify-center items-center min-h-screen'>
-            <Togglemode/>
             <div>
                 {page === 'addTransaction' && (
                     <form className='flex flex-col gap-4 bg-white p-6 rounded-lg shadow-md'>

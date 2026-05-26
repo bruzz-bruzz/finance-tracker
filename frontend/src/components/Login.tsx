@@ -3,7 +3,6 @@ import React, { useState } from 'react'
 import {useNavigate} from 'react-router-dom'
 import './App.css'
 import Toast from './Toast'
-import Togglemode from './Togglemode.tsx'
 export default function App() {
   const [email, setEmail] = useState<string>('')
     const [toast, setToast] = useState<{message:string,type:boolean}>({message:'',type:false})
@@ -32,7 +31,6 @@ export default function App() {
     }
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-slate-50 to-indigo-50 p-6">
-      <Togglemode />
       <div className="w-full max-w-4xl grid grid-cols-1 md:grid-cols-2 gap-6 items-center">
         <div className="hidden md:flex flex-col justify-center px-8">
           <div className="mb-6">

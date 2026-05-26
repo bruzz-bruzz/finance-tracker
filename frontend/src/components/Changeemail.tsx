@@ -1,7 +1,6 @@
 import React, { useState } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import Toast from './Toast.tsx'
-import Togglemode from './Togglemode.tsx'
 export default function Changeemail() {
   const { id } = useParams()
   const nav = useNavigate()
@@ -39,7 +38,6 @@ export default function Changeemail() {
 
   return (
     <div className="min-h-screen flex items-center justify-center p-6 bg-slate-50">
-      <Togglemode/>
       <div className="w-full max-w-md bg-white rounded-2xl shadow-lg p-8">
         <h2 className="text-2xl font-semibold mb-2 text-slate-800">Change Email</h2>
         <p className="text-sm text-slate-600 mb-6">Enter your new email address and confirm.</p>

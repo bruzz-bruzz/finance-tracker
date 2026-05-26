@@ -2,7 +2,6 @@ import { useEffect, useState } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import Chart from './Chart'
 import Toast from './Toast.tsx'
-import Togglemode from './Togglemode.tsx'
 export default function Dashboard() {
   const par = useParams()
   const nav = useNavigate()
@@ -207,7 +206,6 @@ export default function Dashboard() {
     }, [])
   return (
     <div className="min-h-screen bg-slate-50 p-6">
-      <Togglemode />
       <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-4 gap-6">
         {/* Left column / Sidebar */}
         <aside className="lg:col-span-1 bg-white rounded-2xl p-6 shadow">
