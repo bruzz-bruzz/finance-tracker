@@ -21,37 +21,10 @@ const db = new Pool({
     password:process.env.PASSWORD,
     port:process.env.PORT,
 })
-// Configure CORS to allow specific origins and handle preflight requests
-const allowedOrigins = process.env.FRONTEND_ORIGIN ? process.env.FRONTEND_ORIGIN.split(',') : null
-const corsOptions = {
-    origin: function(origin, callback){
-        // allow requests with no origin like mobile apps or curl
-        if(!origin) return callback(null, true)
-        // if no FRONTEND_ORIGIN configured, reflect the request origin (allow all origins)
-        if(!allowedOrigins) return callback(null, true)
-        if(allowedOrigins.indexOf(origin) !== -1){
-            return callback(null, true)
-        }
-        return callback(new Error('Not allowed by CORS'))
-    },
-    credentials: true,
-    optionsSuccessStatus: 200
-}
-app.use(cors(corsOptions))
-app.options('*', cors(corsOptions))
-// Echo origin and ensure preflight responses include required CORS headers
-app.use((req, res, next) => {
-    const origin = req.headers.origin
-    if (origin && (!allowedOrigins || allowedOrigins.indexOf(origin) !== -1)) {
-        res.setHeader('Access-Control-Allow-Origin', origin)
-        res.setHeader('Vary', 'Origin')
-        res.setHeader('Access-Control-Allow-Credentials', 'true')
-        res.setHeader('Access-Control-Allow-Methods', 'GET,POST,PUT,DELETE,OPTIONS')
-        res.setHeader('Access-Control-Allow-Headers', 'Content-Type,Authorization')
-    }
-    if (req.method === 'OPTIONS') return res.sendStatus(200)
-    next()
-})
+app.use(cors({
+    origin:process.env.FRONTEND_ORIGIN,
+    credentials:true
+}))
 app.use(express.json())
 function verifyToken(token,uuid){
     try{
@@ -225,11 +198,12 @@ app.post('/login',async(req,res)=>{
         if(await bcrypt.compare(req.body.password, returnData.rows[0].password)){
             const token = jsonwebtoken.sign({userid:returnData.rows[0].id}, process.env.JWT_SECRET,{expiresIn:'14d'})
             res.cookie('token', token, {
-                httpOnly: true,
-                secure: process.env.NODE_ENV === 'production',
-                sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
-                maxAge: 1000 * 60 * 60 * 24 * 14
-            })
+                httpOnly:true,
+                secure:true,
+                sameSite:'strict',
+                maxAge:1000 * 60 * 60 * 24 * 14
+            }
+            )
             const id = await db.query("SELECT id from users where email = $1",[req.body.email])
             return res.json({message:"Success", userid:id.rows[0].id})
         } else{
