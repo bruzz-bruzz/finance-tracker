@@ -1,0 +1,16 @@
+@import 'tailwindcss';
+
+/* Toast animations */
+.toast {
+	transform: translateX(100%);
+	opacity: 0;
+	transition: transform 300ms ease, opacity 300ms ease;
+}
+.toast.show {
+	transform: translateX(0);
+	opacity: 1;
+}
+.toast.hide {
+	transform: translateX(100%);
+	opacity: 0;
+}
