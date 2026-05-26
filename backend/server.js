@@ -22,11 +22,13 @@ const db = new Pool({
     port:process.env.PORT,
 })
 // Configure CORS to allow specific origins and handle preflight requests
-const allowedOrigins = process.env.FRONTEND_ORIGIN ? process.env.FRONTEND_ORIGIN.split(',') : ['http://localhost:3000']
+const allowedOrigins = process.env.FRONTEND_ORIGIN ? process.env.FRONTEND_ORIGIN.split(',') : null
 const corsOptions = {
     origin: function(origin, callback){
         // allow requests with no origin like mobile apps or curl
         if(!origin) return callback(null, true)
+        // if no FRONTEND_ORIGIN configured, reflect the request origin (allow all origins)
+        if(!allowedOrigins) return callback(null, true)
         if(allowedOrigins.indexOf(origin) !== -1){
             return callback(null, true)
         }
@@ -37,6 +39,19 @@ const corsOptions = {
 }
 app.use(cors(corsOptions))
 app.options('*', cors(corsOptions))
+// Echo origin and ensure preflight responses include required CORS headers
+app.use((req, res, next) => {
+    const origin = req.headers.origin
+    if (origin && (!allowedOrigins || allowedOrigins.indexOf(origin) !== -1)) {
+        res.setHeader('Access-Control-Allow-Origin', origin)
+        res.setHeader('Vary', 'Origin')
+        res.setHeader('Access-Control-Allow-Credentials', 'true')
+        res.setHeader('Access-Control-Allow-Methods', 'GET,POST,PUT,DELETE,OPTIONS')
+        res.setHeader('Access-Control-Allow-Headers', 'Content-Type,Authorization')
+    }
+    if (req.method === 'OPTIONS') return res.sendStatus(200)
+    next()
+})
 app.use(express.json())
 function verifyToken(token,uuid){
     try{
@@ -212,7 +227,7 @@ app.post('/login',async(req,res)=>{
             res.cookie('token', token, {
                 httpOnly: true,
                 secure: process.env.NODE_ENV === 'production',
-                sameSite: 'strict',
+                sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
                 maxAge: 1000 * 60 * 60 * 24 * 14
             })
             const id = await db.query("SELECT id from users where email = $1",[req.body.email])
