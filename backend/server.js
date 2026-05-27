@@ -21,6 +21,7 @@ const db = new Pool({
     password:process.env.PASSWORD,
     port:process.env.PORT,
 })
+app.use(limiter)
 app.use(cors({
     origin:process.env.FRONTEND_ORIGIN,
     credentials:true
