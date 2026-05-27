@@ -41,7 +41,6 @@ export default function Addtransaction() {
         })
         .then(res => res.json())
         .then(data => {
-            console.log(data)
             if(data === "400: Bad request - Error occurred while fetching transaction categories"){
                 return
             }else{

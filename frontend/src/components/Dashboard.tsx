@@ -18,6 +18,7 @@ export default function Dashboard() {
   const [allCategories,setAllCategories] = useState<any[]>([])
   const [toast,setToast] = useState({ok:false,message:''})
   const [category,setCategory] = useState<string>('')
+  const [chartType,setChartType] = useState<string>('line')
   async function addCategory(){
         if(category.trim() !== 'all'){
             await fetch(`${import.meta.env.VITE_REACT_APP_BACKEND_BASEURL}/addTransactionCategory`,{
@@ -90,9 +91,6 @@ export default function Dashboard() {
             body:JSON.stringify({transactionid:transactionId,userid:par.id})
          })
          .then(res=>res.json()) 
-         .then(data=>{
-            console.log(data)
-         })
       await getTransactions()
     }
     async function getTransactionCategories(){
@@ -104,7 +102,6 @@ export default function Dashboard() {
       })
       .then(res=>res.json())
       .then(data=>{
-        console.log(data)
         setTransactionCategories(data)
       })
     }
@@ -175,7 +172,6 @@ export default function Dashboard() {
       }
       d.datasets[0].data = dataa
       d['labels'] = labels
-      console.log(d)
       setChartData(d)
       return d
     }
@@ -271,6 +267,13 @@ export default function Dashboard() {
               <div className="flex items-center justify-between">
                 <h3 className="text-lg font-semibold text-slate-800">Spending</h3>
                 <div className="text-sm text-slate-500">
+                  <select className="border border-slate-300 rounded-md px-2 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500" value={chartType} onChange={(e)=>{
+                    setChartType(e.target.value)
+                    calculateTransactions(filterType,currentCategory)
+                  }}>
+                    <option value='line'>Line</option>
+                    <option value='donut'>Donut</option>
+                  </select>
                   <div className="text-sm text-slate-500">
                   <select className="border border-slate-300 rounded-md px-2 py-1 text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
                   onChange={(e)=>{
@@ -294,8 +297,8 @@ export default function Dashboard() {
                 </select>
                 </div>
               </div>
-              <div className="mt-6 h-48 rounded-lg bg-gradient-to-r from-slate-100 to-slate-50 flex items-center justify-center text-slate-400">
-                {chartData && <Chart transactions={chartData} />}
+              <div className="mt-6 h-auto rounded-lg flex items-center justify-center text-slate-400">
+                {chartData && <Chart transactions={chartData} type={chartType}/>}
               </div>
             </div>
             <div className="bg-white rounded-2xl p-6 shadow">
