@@ -17,6 +17,7 @@ export default function Register() {
          })
          .then(res => res.json())
          .then(data=>{
+			console.log(data)
             if(data == 'Success'){
                 setToast({message:'Registration successful!',type:true})
             }else{

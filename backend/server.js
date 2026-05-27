@@ -96,12 +96,13 @@ app.post('/register',async(req,res)=>{
     if(await doesEmailExist(req.body.email)){
         return res.json("400: Bad request - Email already exists")
     }
-    if(!validateEmail(email)){
+    if(!validateEmail(req.body.email)){
         return res.json("400: Bad request - Incorrect email")
     }
     const hashedPassword = await bcrypt.hash(req.body.password, 10)
-    db.query("INSERT INTO users(email,password,username,registereddate) VALUES($1,$2,$3,$4)", [req.body.email,hashedPassword,req.body.username, new Date()], (err,result) =>{
+    db.query("INSERT INTO users(email,password,username,registereddate,transactiontypes) VALUES($1,$2,$3,$4,'{}')", [req.body.email,hashedPassword,req.body.username, new Date()], (err,result) =>{
         if(err){
+            console.log(err)
             return res.json("400: Bad request - Error occurred while registering")
         } else{
             return res.json("Success")
@@ -141,10 +142,10 @@ app.post('/changeCredentials',async(req,res)=>{
         const returnData = await db.query("SELECT password from users where id = $1",[req.body.userid])
         return bcrypt.compare(pass, returnData.rows[0].password)
     }
-    if(!await verifyPasswords(req.body.currentPassword)){
-            return res.json("400: Bad request - Current password is incorrect")
-        }
     if(req.body.type === 'password'){
+        if(!await verifyPasswords(req.body.currentPassword)){
+            return res.json("400: Bad request - Current password is incorrect")
+    }
         db.query("UPDATE users SET password = $1 where id = $2",[await bcrypt.hash(req.body.newPassword,10),req.body.userid],(err,result)=>{
             if(err){
                 return res.json("400: Bad request - Error occurred while updating password")
@@ -158,6 +159,9 @@ app.post('/changeCredentials',async(req,res)=>{
         if(!validateEmail(req.body.email)){
             return res.json("400: Bad request - Incorrect email")
         }
+        if(!await verifyPasswords(req.body.password)){
+            return res.json("400: Bad request - Password is incorrect")
+        }
         db.query("UPDATE users SET email = $1 where id = $2",[req.body.email,req.body.userid],(err,result)=>{
             if(err){
                 return res.json("400: Bad request - Error occurred while updating email")
@@ -168,6 +172,9 @@ app.post('/changeCredentials',async(req,res)=>{
         })
     }
     else if(req.body.type === 'username'){
+        if(!await verifyPasswords(req.body.password)){
+                return res.json("400: Bad request - Password is incorrect")
+        }
         db.query("UPDATE users SET username = $1 where id = $2",[req.body.newUsername,req.body.userid],(err,result)=>{
             if(err){
                 return res.json("400: Bad request - Error occurred while updating username")
@@ -213,6 +220,7 @@ app.post('/login',async(req,res)=>{
     }
 })
 app.post('/logout',async(req,res)=>{
+    console.log(req.body.userid)
     if(verifyToken(req.cookies.token,req.body.userid) === false){
         return res.json("401: Unauthorized")
     }

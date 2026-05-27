@@ -11,7 +11,7 @@ export default function Addtransaction() {
     const [name,setName] = useState('')
     const [message,setMessage] = useState({ok:false,msg:''})
     const [transactionCategories,setTransactionCategories] = useState<string[]>([]) 
-    const [category,setCategory] = useState('')
+    const [category,setCategory] = useState('all')
     const [page,setPage] = useState('addTransaction')
     async function submit() {
         await fetch(`${import.meta.env.VITE_REACT_APP_BACKEND_BASEURL}/addTransaction`,{
@@ -100,6 +100,7 @@ export default function Addtransaction() {
                             {transactionCategories.map((val,idx)=>(
                                 <option key={idx} value={val}>{val}</option>
                             ))}
+                            <option key="all" value="all">all</option>
                         </select>
                     </div>
                     <div>

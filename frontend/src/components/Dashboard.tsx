@@ -19,6 +19,7 @@ export default function Dashboard() {
   const [toast,setToast] = useState({ok:false,message:''})
   const [category,setCategory] = useState<string>('')
   const [chartType,setChartType] = useState<string>('line')
+  const [refresh,setRefresh] = useState(false)
   async function addCategory(){
         if(category.trim() !== 'all'){
             await fetch(`${import.meta.env.VITE_REACT_APP_BACKEND_BASEURL}/addTransactionCategory`,{
@@ -199,7 +200,7 @@ export default function Dashboard() {
     getTransactions()
     getTransactionCategories()
     calculateTransactions(filterType, currentCategory)
-    }, [])
+    }, [refresh])
   return (
     <div className="min-h-screen bg-slate-50 p-6">
       <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-4 gap-6">
@@ -349,7 +350,11 @@ export default function Dashboard() {
                             <td className="px-4 py-3 ">{tx.transactiondate}</td>
                             <td className="px-4 py-3 ">{tx.transactioncategory}</td>
                             <td className="px-4 py-3 ">
-                                <button className="bg-red-500 text-white py-1 px-3 rounded-md" onClick={() => deleteTransaction(tx.transactionid)}>Delete</button>
+                                <button className="bg-red-500 text-white py-1 px-3 rounded-md" onClick={() => {
+                                  deleteTransaction(tx.transactionid)
+                                  calculateTransactions(filterType,currentCategory)
+                                  setRefresh(!refresh)
+                                }}>Delete</button>
                             </td>
                         </tr>
                     ))}
@@ -393,11 +398,13 @@ export default function Dashboard() {
                           await fetch(`${import.meta.env.VITE_REACT_APP_BACKEND_BASEURL}/logout`,{
                             method:"POST",
                             credentials:'include',
-                            headers:{"Content-Type":"application/json"}
+                            headers:{"Content-Type":"application/json"},
+                            body:JSON.stringify({userid:par.id})
                           })
                           .then(res=>res.json())
                           .then(data=>{
-                            if(data === 'Success'){
+                            console.log(data)
+                            if(data === '200: Success'){
                               nav('/login')
                             }
                           })
