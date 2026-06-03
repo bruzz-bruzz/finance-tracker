@@ -102,7 +102,7 @@ app.post('/register',async(req,res)=>{
     const hashedPassword = await bcrypt.hash(req.body.password, 10)
     db.query("INSERT INTO users(email,password,username,registereddate,transactiontypes) VALUES($1,$2,$3,$4,'{}')", [req.body.email,hashedPassword,req.body.username, new Date()], (err,result) =>{
         if(err){
-            console.log(err)
+
             return res.json("400: Bad request - Error occurred while registering")
         } else{
             return res.json("Success")
@@ -220,7 +220,6 @@ app.post('/login',async(req,res)=>{
     }
 })
 app.post('/logout',async(req,res)=>{
-    console.log(req.body.userid)
     if(verifyToken(req.cookies.token,req.body.userid) === false){
         return res.json("401: Unauthorized")
     }
